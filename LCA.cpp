@@ -60,6 +60,33 @@ void run(){
     };
 
     auto lca = func(n1,5,6);
-
     cout<<"lower common ancester: "<<lca->idx<<endl;
+
+     //层序遍历获取公共根节点到两个节点的距离之和
+    auto getPath = [](const shared_ptr<node> &root, const shared_ptr<node> &nd) -> int {
+        int dist{0};
+        std::stack<shared_ptr<node>> stack, next_stack;
+
+        stack.emplace(root);
+        while (!stack.empty()) {
+            auto top = stack.top();
+            stack.pop();
+
+            if (top->idx == nd->idx)
+                return dist;
+
+            //获取下一层的节点
+            for (auto &son: top->sons) {
+                next_stack.emplace(son);
+            }
+
+            if (stack.empty()) {
+                swap(stack, next_stack);
+                dist++;
+            }
+        }
+    };
+
+    int dis = getPath(lca,n5) + getPath(lca,n6);
+    cout<<"dist: "<<dis<<endl;
 }
